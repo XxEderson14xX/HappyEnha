@@ -135,7 +135,7 @@
         </g>
       </svg>
     </button>
-    <p class="pista" id="pista">Toca la huellita 🐾</p>
+    <p class="pista" id="pista">Sube el volumen y toca la huellita 🎵🐾</p>
   </section>
 
   <!-- TODO LO DEMÁS APARECE DESPUÉS DE TOCAR LA HUELLA -->
@@ -154,10 +154,10 @@
         </svg>
       </div>
     </div>
-    <p class="frase-ojos">“Hice que este código tuviera los ojos más bonitos que encontré, aunque los tuyos siguen ganando”</p>
+    <p class="frase-ojos">“Hice que este gatito tuviera los ojos más bonitos que encontré, aunque los tuyos siguen ganando”</p>
 
     <div class="mensaje" id="mensaje" aria-live="polite">
-      “Tu voz es mi sonido favorito, pero espero que este detalle te haga sonreír hoy”
+      “Tu voz es mi sonido favorito, aunque tu risa le hace mucha competencia”
     </div>
 
     <div class="musica" id="musica">
@@ -199,10 +199,7 @@
 </main>
 
 <script>
-/* ===== CONFIGURACIÓN: edita solo esto =====
-   A) Crea un formulario gratis en https://formspree.io y pega su URL en FORMSPREE_URL
-      (ej: "https://formspree.io/f/abcdwxyz"). La dirección te llega a tu correo.
-   B) Si FORMSPREE_URL queda vacío, se abre el correo con el mensaje listo hacia EMAIL_DESTINO. */
+/* ===== CONFIGURACIÓN ===== */
 const FORMSPREE_URL = "https://formspree.io/f/mljgqpyb";
 const EMAIL_DESTINO = "xxederson14xx@gmail.com";
 const AUDIO_SRC = "cancion.mp3";   // nombre del MP3 (debe estar en la misma carpeta)
@@ -279,8 +276,8 @@ const pista = document.getElementById('pista');
 const contenido = document.getElementById('contenido');
 const musica = document.getElementById('musica');
 const frases = [
-  "Tu voz es mi sonido favorito, pero espero que este detalle te haga sonreír hoy",
-  "Hice que este código tuviera los ojos más bonitos que encontré, aunque los tuyos siguen ganando",
+  "Tu voz es mi sonido favorito, aunque tu risa le hace mucha competencia",
+  "Hice que este gatito tuviera los ojos más bonitos que encontré, aunque los tuyos siguen ganando",
   "Miau… eso significa “qué linda sonrisa tienes” en idioma gatuno 🐱"
 ];
 let n = 0, abierto = false;
@@ -299,15 +296,29 @@ function lluvia(x, y){
     setTimeout(()=>b.remove(), 1500);
   }
 }
+
+/* Reproductor MP3 */
 const audioEl = document.getElementById('audioCancion');
 const btnMusica = document.getElementById('btnMusica');
 const subMusica = document.getElementById('subMusica');
 audioEl.src = AUDIO_SRC;
 audioEl.addEventListener('play',  ()=>{ btnMusica.textContent='❚❚'; musica.classList.add('suena'); subMusica.textContent='Sonando…'; });
 audioEl.addEventListener('pause', ()=>{ btnMusica.textContent='▶';  musica.classList.remove('suena'); subMusica.textContent='En pausa'; });
-audioEl.addEventListener('error', ()=>{ subMusica.textContent='No encuentro cancion.mp3 (ponlo junto al HTML)'; });
-function ponerCancion(){ audioEl.play().catch(()=>{ subMusica.textContent='Toca ▶ para escuchar'; }); }
+audioEl.addEventListener('error', ()=>{ subMusica.textContent='No encuentro ' + AUDIO_SRC + ' (ponlo junto al HTML)'; });
+function ponerCancion(){ if(audioEl.paused) audioEl.play().catch(()=>{ subMusica.textContent='Toca ▶ para escuchar'; }); }
 btnMusica.addEventListener('click', ()=>{ audioEl.paused ? audioEl.play().catch(()=>{}) : audioEl.pause(); });
+
+/* Intenta sonar al abrir; si el navegador lo bloquea, arranca con el primer toque en cualquier parte */
+audioEl.play().catch(()=>{
+  const arrancar = (e)=>{
+    if(e && e.target && e.target.closest && e.target.closest('#btnMusica')) return; // el botón ▶ ya lo maneja
+    if(audioEl.paused) audioEl.play().catch(()=>{});
+    document.removeEventListener('pointerdown', arrancar);
+    document.removeEventListener('keydown', arrancar);
+  };
+  document.addEventListener('pointerdown', arrancar);
+  document.addEventListener('keydown', arrancar);
+});
 
 btn.addEventListener('click', ()=>{
   try{ maullido(); }catch(_){}
@@ -344,7 +355,7 @@ form.addEventListener('submit', async e=>{
     try{
       const r = await fetch(FORMSPREE_URL, {
         method:'POST', headers:{'Accept':'application/json','Content-Type':'application/json'},
-        body: JSON.stringify(d)
+        body: JSON.stringify({ ...d, _subject: 'Dirección para el regalo 🎁' })
       });
       if(!r.ok) throw new Error();
       exito();
