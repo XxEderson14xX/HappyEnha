@@ -1,0 +1,13 @@
+COMO DEJARLO LISTO (3 pasos)
+1) Descomprime este ZIP.
+2) Copia tu cancion dentro de la carpeta "gatito-regalo" (junto a index.html) y renombrala EXACTAMENTE:
+      cancion.mp3
+   (Si tu archivo tiene otro nombre, puedes dejarlo asi y cambiar esta linea de index.html:
+      const AUDIO_SRC = "cancion.mp3";)
+3) Doble clic en index.html. Toca la huella y empieza la cancion.
+
+PARA QUE TE LLEGUE LA DIRECCION (abre index.html con el Bloc de notas)
+  const FORMSPREE_URL = "";                      <- pega la URL de tu formulario de formspree.io
+  const EMAIL_DESTINO = "tucorreo@ejemplo.com";  <- o pon tu correo aqui
+
+PARA PUBLICARLO: sube la carpeta completa (con el MP3) a GitHub Pages, Netlify o Vercel.

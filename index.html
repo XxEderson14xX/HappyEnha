@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cat-ready 🐾</title>
+<style>
+  :root{
+    --rosa:#ff8fb1; --lila:#c9b6ff; --crema:#fff8f2;
+    --texto:#4a3550; --acento:#ff5c8a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+    color:var(--texto);
+    background:linear-gradient(160deg,#ffe3ec 0%,#f3e6ff 55%,#e3f0ff 100%);
+    background-attachment:fixed;
+    overflow-x:hidden;
+  }
+  .huellas{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .huellas span{position:absolute;bottom:-60px;opacity:.18;font-size:28px;animation:subir linear infinite}
+  @keyframes subir{to{transform:translateY(-120vh) rotate(25deg)}}
+
+  main{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 20px 60px;text-align:center}
+  .inicio{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 0}
+  .oculto{display:none}
+  .oculto.mostrar{display:block;animation:aparece .9s ease both}
+  @keyframes aparece{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+  h1{font-size:clamp(2rem,6vw,3rem);letter-spacing:.5px}
+  h1 small{display:block;font-size:1rem;font-weight:400;opacity:.7;margin-top:6px}
+
+  /* BOTÓN HUELLA */
+  .btn-huella{
+    border:none;cursor:pointer;width:200px;height:200px;border-radius:50%;
+    display:inline-grid;place-items:center;position:relative;
+    background:radial-gradient(circle at 35% 30%,#fff,#ffd3e2);
+    box-shadow:0 12px 30px rgba(255,92,138,.35),inset 0 -6px 14px rgba(255,143,177,.35);
+    transition:transform .15s;
+    animation:latido 2.4s ease-in-out infinite;
+  }
+  .btn-huella:hover{transform:scale(1.08) rotate(-4deg);animation:none}
+  .btn-huella:active{transform:scale(.94)}
+  .btn-huella:focus-visible{outline:4px solid var(--lila);outline-offset:4px}
+  .btn-huella svg{width:118px;height:118px}
+  @keyframes latido{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  .pista{margin-top:12px;font-size:.9rem;opacity:.7}
+
+  /* GATO */
+  .gato-wrap{margin:22px auto 6px;width:min(320px,80vw)}
+  .gato{position:relative;width:100%;aspect-ratio:1/1;border-radius:28px;overflow:hidden;
+    background:#d6bdf7;box-shadow:0 14px 34px rgba(120,80,170,.28);
+    animation:flota 4s ease-in-out infinite}
+  .gato img{display:block;width:100%;height:100%;user-select:none;-webkit-user-drag:none}
+  .gato svg{position:absolute;inset:0;width:100%;height:100%}
+  @keyframes flota{0%,100%{translate:0 0}50%{translate:0 -6px}}
+  .gato.feliz{animation:salto .6s ease-out}
+  @keyframes salto{30%{transform:scale(1.06,.94)}60%{transform:scale(.97,1.05)}}
+  .frase-ojos{font-style:italic;font-size:.98rem;opacity:.85;margin:6px auto 26px;max-width:520px}
+
+  /* MENSAJE */
+  .mensaje{
+    margin:22px auto 0;max-width:520px;min-height:80px;padding:18px 22px;border-radius:20px;
+    background:rgba(255,255,255,.75);backdrop-filter:blur(6px);
+    box-shadow:0 8px 24px rgba(120,80,150,.12);
+    font-size:1.1rem;line-height:1.5;
+    opacity:0;transform:translateY(12px);transition:.5s;
+  }
+  .mensaje.visible{opacity:1;transform:none}
+
+  /* CANCIÓN */
+  .musica{margin:22px auto 0;max-width:520px;padding:14px 18px;border-radius:18px;background:rgba(255,255,255,.8);
+    box-shadow:0 8px 24px rgba(120,80,150,.15);display:flex;align-items:center;gap:14px;text-align:left}
+  .musica button{flex:none;width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;font-size:22px;color:#fff;
+    background:linear-gradient(135deg,var(--rosa),var(--acento));box-shadow:0 6px 14px rgba(255,92,138,.35)}
+  .musica button:active{transform:scale(.94)}
+  .musica .tit{font-weight:700}
+  .musica .sub2{font-size:.82rem;opacity:.7}
+  .musica .ecual{margin-left:auto;display:flex;gap:3px;align-items:flex-end;height:22px}
+  .musica .ecual i{width:4px;height:6px;background:var(--acento);border-radius:2px}
+  .musica.suena .ecual i{animation:bar .8s ease-in-out infinite}
+  .musica.suena .ecual i:nth-child(2){animation-delay:.2s}
+  .musica.suena .ecual i:nth-child(3){animation-delay:.4s}
+  .musica.suena .ecual i:nth-child(4){animation-delay:.1s}
+  @keyframes bar{0%,100%{height:6px}50%{height:22px}}
+
+  /* REGALO */
+  .regalo{
+    margin:44px auto 0;max-width:520px;padding:26px 22px 24px;border-radius:24px;
+    background:#fff;border:3px dashed var(--rosa);
+    box-shadow:0 10px 30px rgba(255,92,138,.18);text-align:left;
+  }
+  .regalo h2{text-align:center;font-size:1.4rem;margin-bottom:4px}
+  .regalo .sub{text-align:center;font-size:.95rem;opacity:.75;margin-bottom:18px}
+  label{display:block;font-size:.85rem;font-weight:600;margin:12px 0 4px}
+  input{
+    width:100%;padding:12px 14px;border-radius:12px;border:2px solid #f1d5e0;
+    font:inherit;color:var(--texto);background:var(--crema);transition:border .2s,box-shadow .2s;
+  }
+  input:focus{outline:none;border-color:var(--rosa);box-shadow:0 0 0 4px rgba(255,143,177,.25)}
+  .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:480px){.fila{grid-template-columns:1fr}}
+  .enviar{
+    margin-top:20px;width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;
+    font:inherit;font-weight:700;font-size:1.05rem;color:#fff;
+    background:linear-gradient(135deg,var(--rosa),var(--acento));
+    box-shadow:0 8px 18px rgba(255,92,138,.35);transition:transform .15s;
+  }
+  .enviar:hover{transform:translateY(-2px)}
+  .enviar:disabled{opacity:.6;cursor:wait}
+  .estado{margin-top:14px;text-align:center;font-weight:600;min-height:24px}
+  .privado{margin-top:8px;font-size:.78rem;opacity:.6;text-align:center}
+
+  .burbuja{position:fixed;pointer-events:none;z-index:50;font-size:24px;animation:volar 1.4s ease-out forwards}
+  @keyframes volar{to{transform:translate(var(--dx),var(--dy)) scale(1.4) rotate(var(--r));opacity:0}}
+  footer{margin-top:40px;font-size:.85rem;opacity:.6}
+</style>
+</head>
+<body>
+<div class="huellas" id="huellas"></div>
+
+<main>
+  <!-- PRIMERA PANTALLA: SOLO LA HUELLA -->
+  <section class="inicio" id="inicio">
+    <h1>Hola, tú 🐾<small>Hice algo chiquito para sacarte una sonrisa</small></h1>
+    <div style="height:26px"></div>
+    <button class="btn-huella" id="btnHuella" aria-label="Toca la huella">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="#ff5c8a">
+          <ellipse cx="50" cy="66" rx="24" ry="19"/>
+          <ellipse cx="20" cy="42" rx="8.5" ry="11" transform="rotate(-20 20 42)"/>
+          <ellipse cx="38" cy="26" rx="9" ry="12" transform="rotate(-6 38 26)"/>
+          <ellipse cx="62" cy="26" rx="9" ry="12" transform="rotate(6 62 26)"/>
+          <ellipse cx="80" cy="42" rx="8.5" ry="11" transform="rotate(20 80 42)"/>
+        </g>
+      </svg>
+    </button>
+    <p class="pista" id="pista">Toca la huellita 🐾</p>
+  </section>
+
+  <!-- TODO LO DEMÁS APARECE DESPUÉS DE TOCAR LA HUELLA -->
+  <div class="oculto" id="contenido">
+
+    <div class="gato-wrap">
+      <div class="gato" id="gato">
+        <img id="fotoGato" alt="Gatito gris con cara de sueño" src="data:image/webp;base64,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">
+        <svg viewBox="0 0 554 554" aria-hidden="true">
+          <defs>
+            <clipPath id="clipI"><path d="M298 252 A22 18.5 0 0 0 342 252 Z"/></clipPath>
+            <clipPath id="clipD"><path d="M393.1 250.3 A20.5 17 -5 0 0 433.9 246.7 Z"/></clipPath>
+          </defs>
+          <g clip-path="url(#clipI)"><circle id="pupI" cx="320" cy="254" r="12.5" fill="#12007a"/><circle id="briI" cx="315" cy="249" r="2.6" fill="#fff" opacity=".9"/></g>
+          <g clip-path="url(#clipD)"><circle id="pupD" cx="412" cy="249" r="12.5" fill="#12007a"/><circle id="briD" cx="407" cy="244" r="2.6" fill="#fff" opacity=".9"/></g>
+        </svg>
+      </div>
+    </div>
+    <p class="frase-ojos">“Hice que este código tuviera los ojos más bonitos que encontré, aunque los tuyos siguen ganando”</p>
+
+    <div class="mensaje" id="mensaje" aria-live="polite">
+      “Tu voz es mi sonido favorito, pero espero que este detalle te haga sonreír hoy”
+    </div>
+
+    <div class="musica" id="musica">
+      <button id="btnMusica" type="button" aria-label="Reproducir o pausar la canción">▶</button>
+      <div><div class="tit">🎵 Nuestra canción</div><div class="sub2" id="subMusica">Toca para escuchar</div></div>
+      <div class="ecual" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </div>
+    <audio id="audioCancion" preload="auto" loop></audio>
+
+    <section class="regalo" id="regalo">
+      <h2>🎁 ¿Quieres tu regalo?</h2>
+      <p class="sub">Pon aquí tu dirección, por favor 💌</p>
+      <form id="formRegalo" novalidate>
+        <label for="nombre">Tu nombre</label>
+        <input id="nombre" name="nombre" type="text" placeholder="¿Cómo te llamas?" autocomplete="name">
+
+        <label for="calle">Dirección (calle y número)</label>
+        <input id="calle" name="direccion" type="text" placeholder="Calle, número exterior/interior" autocomplete="street-address">
+
+        <div class="fila">
+          <div>
+            <label for="colonia">Colonia</label>
+            <input id="colonia" name="colonia" type="text" placeholder="Colonia" autocomplete="address-level3">
+          </div>
+          <div>
+            <label for="cp">Código postal</label>
+            <input id="cp" name="cp" type="text" inputmode="numeric" placeholder="CP" autocomplete="postal-code">
+          </div>
+        </div>
+
+        <button class="enviar" id="btnEnviar" type="submit">Enviar mi dirección 🐱</button>
+        <div class="estado" id="estado" role="status"></div>
+        <p class="privado">Solo se usará para enviarte tu regalo 💖</p>
+      </form>
+    </section>
+
+    <footer>Hecho con cariño y un poquito de código 🐾</footer>
+  </div>
+</main>
+
+<script>
+/* ===== CONFIGURACIÓN: edita solo esto =====
+   A) Crea un formulario gratis en https://formspree.io y pega su URL en FORMSPREE_URL
+      (ej: "https://formspree.io/f/abcdwxyz"). La dirección te llega a tu correo.
+   B) Si FORMSPREE_URL queda vacío, se abre el correo con el mensaje listo hacia EMAIL_DESTINO. */
+const FORMSPREE_URL = "https://formspree.io/f/mljgqpyb";
+const EMAIL_DESTINO = "xxederson14xx@gmail.com";
+const AUDIO_SRC = "cancion.mp3";   // nombre del MP3 (debe estar en la misma carpeta)
+
+/* Huellitas de fondo */
+(function(){
+  const cont = document.getElementById('huellas');
+  for(let i=0;i<14;i++){
+    const s = document.createElement('span');
+    s.textContent = '🐾';
+    s.style.left = Math.random()*100 + '%';
+    s.style.fontSize = (20 + Math.random()*26) + 'px';
+    s.style.animationDuration = (14 + Math.random()*18) + 's';
+    s.style.animationDelay = (-Math.random()*25) + 's';
+    cont.appendChild(s);
+  }
+})();
+
+/* Ojos que siguen el cursor */
+const gato = document.getElementById('gato');
+const ojos = [
+  {p: document.getElementById('pupI'), b: document.getElementById('briI'), cx:320, cy:254},
+  {p: document.getElementById('pupD'), b: document.getElementById('briD'), cx:412, cy:249}
+];
+function mirar(x, y){
+  const r = gato.getBoundingClientRect();
+  if(!r.width) return;
+  const k = r.width / 554;
+  ojos.forEach(o=>{
+    const ox = r.left + o.cx*k, oy = r.top + o.cy*k;
+    const ang = Math.atan2(y-oy, x-ox);
+    const d = Math.min(1, Math.hypot(x-ox, y-oy) / 250);
+    const dx = Math.cos(ang)*d*9, dy = Math.sin(ang)*d*5;
+    o.p.setAttribute('cx', o.cx+dx); o.p.setAttribute('cy', o.cy+dy);
+    o.b.setAttribute('cx', o.cx-5+dx); o.b.setAttribute('cy', o.cy-5+dy);
+  });
+}
+window.addEventListener('pointermove', e => mirar(e.clientX, e.clientY));
+window.addEventListener('touchmove', e => { const t=e.touches[0]; if(t) mirar(t.clientX,t.clientY); }, {passive:true});
+
+/* Maullido sintetizado */
+let ctx;
+function audio(){
+  if(!ctx){ ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+  if(ctx.state === 'suspended') ctx.resume();
+  return ctx;
+}
+function maullido(){
+  const c = audio(), t = c.currentTime;
+  const osc = c.createOscillator(); osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(420, t);
+  osc.frequency.exponentialRampToValueAtTime(820, t+0.18);
+  osc.frequency.exponentialRampToValueAtTime(520, t+0.75);
+  const lfo = c.createOscillator(), lfoG = c.createGain();
+  lfo.frequency.value = 6; lfoG.gain.value = 12;
+  lfo.connect(lfoG); lfoG.connect(osc.frequency);
+  const f = c.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 4;
+  f.frequency.setValueAtTime(700, t);
+  f.frequency.exponentialRampToValueAtTime(1900, t+0.22);
+  f.frequency.exponentialRampToValueAtTime(900, t+0.8);
+  const g = c.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.5, t+0.08);
+  g.gain.setValueAtTime(0.4, t+0.45);
+  g.gain.exponentialRampToValueAtTime(0.0001, t+0.85);
+  osc.connect(f); f.connect(g); g.connect(c.destination);
+  osc.start(t); lfo.start(t); osc.stop(t+0.9); lfo.stop(t+0.9);
+}
+
+/* Botón huella */
+const btn = document.getElementById('btnHuella');
+const msg = document.getElementById('mensaje');
+const pista = document.getElementById('pista');
+const contenido = document.getElementById('contenido');
+const musica = document.getElementById('musica');
+const frases = [
+  "Tu voz es mi sonido favorito, pero espero que este detalle te haga sonreír hoy",
+  "Hice que este código tuviera los ojos más bonitos que encontré, aunque los tuyos siguen ganando",
+  "Miau… eso significa “qué linda sonrisa tienes” en idioma gatuno 🐱"
+];
+let n = 0, abierto = false;
+
+function lluvia(x, y){
+  const emojis = ['💖','🐾','✨','💗','🐱'];
+  for(let i=0;i<14;i++){
+    const b = document.createElement('div');
+    b.className = 'burbuja';
+    b.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    b.style.left = x+'px'; b.style.top = y+'px';
+    b.style.setProperty('--dx', (Math.random()*320-160)+'px');
+    b.style.setProperty('--dy', (-80-Math.random()*220)+'px');
+    b.style.setProperty('--r', (Math.random()*80-40)+'deg');
+    document.body.appendChild(b);
+    setTimeout(()=>b.remove(), 1500);
+  }
+}
+const audioEl = document.getElementById('audioCancion');
+const btnMusica = document.getElementById('btnMusica');
+const subMusica = document.getElementById('subMusica');
+audioEl.src = AUDIO_SRC;
+audioEl.addEventListener('play',  ()=>{ btnMusica.textContent='❚❚'; musica.classList.add('suena'); subMusica.textContent='Sonando…'; });
+audioEl.addEventListener('pause', ()=>{ btnMusica.textContent='▶';  musica.classList.remove('suena'); subMusica.textContent='En pausa'; });
+audioEl.addEventListener('error', ()=>{ subMusica.textContent='No encuentro cancion.mp3 (ponlo junto al HTML)'; });
+function ponerCancion(){ audioEl.play().catch(()=>{ subMusica.textContent='Toca ▶ para escuchar'; }); }
+btnMusica.addEventListener('click', ()=>{ audioEl.paused ? audioEl.play().catch(()=>{}) : audioEl.pause(); });
+
+btn.addEventListener('click', ()=>{
+  try{ maullido(); }catch(_){}
+  const r = btn.getBoundingClientRect();
+  lluvia(r.left + r.width/2, r.top + r.height/2);
+  if(!abierto){
+    abierto = true;
+    contenido.classList.add('mostrar');
+    ponerCancion();
+    msg.classList.add('visible'); n = 1;
+    setTimeout(()=>contenido.scrollIntoView({behavior:'smooth', block:'start'}), 400);
+  } else {
+    msg.classList.remove('visible');
+    setTimeout(()=>{ msg.textContent = '“' + frases[n % frases.length] + '”'; msg.classList.add('visible'); n++; }, 150);
+  }
+  gato.classList.add('feliz'); setTimeout(()=>gato.classList.remove('feliz'), 1200);
+  pista.textContent = 'Otra vez 😺';
+});
+
+/* Formulario del regalo */
+const form = document.getElementById('formRegalo');
+const estado = document.getElementById('estado');
+const btnEnviar = document.getElementById('btnEnviar');
+form.addEventListener('submit', async e=>{
+  e.preventDefault();
+  estado.style.color = '';
+  const d = Object.fromEntries(new FormData(form).entries());
+  if(!d.nombre.trim() || !d.direccion.trim() || !d.colonia.trim() || !d.cp.trim()){
+    estado.textContent = 'Faltan algunos datos para que llegue tu regalo 🥺';
+    estado.style.color = '#d6336c'; return;
+  }
+  btnEnviar.disabled = true; estado.textContent = 'Enviando…';
+  if(FORMSPREE_URL){
+    try{
+      const r = await fetch(FORMSPREE_URL, {
+        method:'POST', headers:{'Accept':'application/json','Content-Type':'application/json'},
+        body: JSON.stringify(d)
+      });
+      if(!r.ok) throw new Error();
+      exito();
+    }catch(_){
+      estado.textContent = 'Ups, no se pudo enviar. Intenta de nuevo 🙈';
+      estado.style.color = '#d6336c'; btnEnviar.disabled = false;
+    }
+  } else {
+    const cuerpo = 'Nombre: ' + d.nombre + '\nDirección: ' + d.direccion + '\nColonia: ' + d.colonia + '\nCP: ' + d.cp;
+    window.location.href = 'mailto:' + EMAIL_DESTINO +
+      '?subject=' + encodeURIComponent('Mi dirección para mi regalo 🎁') +
+      '&body=' + encodeURIComponent(cuerpo);
+    exito();
+  }
+});
+function exito(){
+  estado.textContent = '¡Listo! Ya casi va en camino tu regalo 🎁💖';
+  estado.style.color = '#2b8a3e';
+  const r = btnEnviar.getBoundingClientRect();
+  lluvia(r.left + r.width/2, r.top);
+  try{ maullido(); }catch(_){}
+  form.reset(); btnEnviar.disabled = false;
+}
+</script>
+</body>
+</html>
